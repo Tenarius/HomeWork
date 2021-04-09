@@ -10,7 +10,7 @@ namespace TestTask
 {
     class Test1
     {
-        private string htmlSource;
+        private string htmlSource; 
 
         public Test1(string address)
         {  
@@ -22,6 +22,9 @@ namespace TestTask
             }
         }
 
+        /// <summary>
+        /// Проверяет на корректность URL.
+        /// </summary>
         private bool IsAddress(string address)
         {
             if (Uri.IsWellFormedUriString(address, UriKind.Absolute))
@@ -29,10 +32,12 @@ namespace TestTask
                 return true;
             }
 
-            Console.WriteLine("Invalid address.");
             return false;
         }
 
+        /// <summary>
+        /// Получить HTML в виде строки.
+        /// </summary>
         private string GetHtmlString(string address)
         {
             try
@@ -57,6 +62,9 @@ namespace TestTask
             }
         }
 
+        /// <summary>
+        /// Создать файл HTML.
+        /// </summary>
         private void CreateHtmlFile(string htmlSource, string path = "html.txt")
         {
             try
@@ -72,6 +80,9 @@ namespace TestTask
             }
         }
 
+        /// <summary>
+        /// Получить ссылки на изображение.
+        /// </summary>
         private List<Uri> GetUrlImages(string htmlSource)
         {
             List<Uri> addressImages = new List<Uri>(5);
@@ -91,23 +102,26 @@ namespace TestTask
             return addressImages;
         }
 
+        /// <summary>
+        /// Получить изображение.
+        /// </summary>
         private async Task DownloadImageAsync(string directoryPath, string fileName, Uri uri)
         {
             var httpClient = new HttpClient();
 
-            // Get the file extension
             var uriWithoutQuery = uri.GetLeftPart(UriPartial.Path);
             var fileExtension = Path.GetExtension(uriWithoutQuery);
 
-            // Create file path and ensure directory exists
             var path = Path.Combine(directoryPath, $"{fileName}{fileExtension}");
             Directory.CreateDirectory(directoryPath);
 
-            // Download the image and write to the file
             var imageBytes = await httpClient.GetByteArrayAsync(uri);
             File.WriteAllBytes(path, imageBytes);
         }
 
+        /// <summary>
+        /// Создать директорию и файлы с изображениями.
+        /// </summary>
         private async Task CreateDirImage(List<Uri> uriImages)
         {
             string path = @"C:\Images";
@@ -130,6 +144,9 @@ namespace TestTask
             CreateFileSaveImages(uriImages, path+@"\saveImage.txt");
         }
 
+        /// <summary>
+        /// Создать фалйл с адресами изображений.
+        /// </summary>
         private void CreateFileSaveImages(List<Uri> uriImages, string path)
         {
             try

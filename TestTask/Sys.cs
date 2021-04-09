@@ -33,7 +33,7 @@ namespace TestTask
                 if (long.TryParse(value, out long time))
                 {
                     _sunset = DateTimeOffset.FromUnixTimeSeconds(time).LocalDateTime;
-                }
+                }              
             }
         }
     }

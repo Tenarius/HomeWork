@@ -8,9 +8,9 @@ namespace TestTask
 {
     class Test2
     {
-        private string url;
-        private string weatherData;
-        private WeatherResponce weatherResponce;
+        private string url; // Запрос для получения JSON файла.
+        private string weatherData; // Хранить JSON в виде строки.
+        private WeatherResponce weatherResponce; // Класс для хранения объекта Weather.
         public Test2(string city)
         {
             if (!TestForNullOrEmpty(city))
@@ -27,6 +27,7 @@ namespace TestTask
             }       
         }
 
+        // Получаем JSON.
         private void GetWeatherData(string url)
         {
             if (IsAddress(url))
@@ -51,6 +52,7 @@ namespace TestTask
             }
         }
 
+        // Десериализация.
         private WeatherResponce SetWeatherResponce(string weather)
         {
             if (!TestForNullOrEmpty(weather))
@@ -61,6 +63,7 @@ namespace TestTask
             return weatherResponce;
         }
 
+        // Проверка на корректность URL.
         private bool IsAddress(string address)
         {
             if (Uri.IsWellFormedUriString(address, UriKind.Absolute))
@@ -72,6 +75,7 @@ namespace TestTask
             return false;
         }
 
+        // Проверка на пустую строку и NULL.
         private bool TestForNullOrEmpty(string s)
         {
             bool result;
@@ -79,15 +83,19 @@ namespace TestTask
             return result;
         }
 
+        // Вывод данных в косноль.
         public void GetWeather()
         {
-            if (weatherResponce.Main != null && weatherResponce.Sys != null)
+            if (!IsNullWeather(weatherResponce))
             {
                 Console.WriteLine($"Температура: {weatherResponce.Main.Temp}°C\nВлажность: {weatherResponce.Main.Humidity}%\n");
                 Console.WriteLine($"Восход: {weatherResponce.Sys.Sunrise}\nЗакат: {weatherResponce.Sys.Sunset}");
             }
         }
 
+        /// <summary>
+        /// Создает файл с данными о погоде.
+        /// </summary>
         private void CreateFileDataWeather()
         {
             string pathDir = @"C:\WeatherData";
@@ -101,11 +109,32 @@ namespace TestTask
 
             string pathFile = pathDir + @"\" + DateTime.Now.ToString("dd.MM.yyyy") + ".txt";
 
-            using (StreamWriter writer = new StreamWriter(pathFile, false, Encoding.Default))
+            if (!IsNullWeather(weatherResponce))
             {
-                writer.WriteLine($"Температура: {weatherResponce.Main.Temp}°C\nВлажность: {weatherResponce.Main.Humidity}%\n");
-                writer.WriteLine($"Восход: {weatherResponce.Sys.Sunrise}\nЗакат: {weatherResponce.Sys.Sunset}");
+                using (StreamWriter writer = new StreamWriter(pathFile, false, Encoding.Default))
+                {
+                    writer.WriteLine($"Температура: {weatherResponce.Main.Temp}°C\nВлажность: {weatherResponce.Main.Humidity}%\n");
+                    writer.WriteLine($"Восход: {weatherResponce.Sys.Sunrise}\nЗакат: {weatherResponce.Sys.Sunset}");
+                }
             }
+        }
+
+        /// <summary>
+        /// Поверка на NULL.
+        /// </summary>
+       private bool IsNullWeather(WeatherResponce weatherResponce)
+        {
+            if (weatherResponce == null)
+            {
+                return true;
+            }
+
+            if(weatherResponce.Main == null && weatherResponce.Sys == null)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }
